@@ -6,21 +6,31 @@ import PackageDescription
 let package = Package(
     name: "Wreath",
     platforms: [.macOS(.v12)],
+    products: [
+        .library(
+            name: "WreathClient",
+            targets: ["WreathClient"])],
     dependencies: [
-        // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.1.4"),
         .package(url: "https://github.com/OperatorFoundation/ShadowSwift", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/Antiphony", branch: "main"),
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
-        .executableTarget(
-            name: "Wreath",
-            dependencies: [
-                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+        .target(name: "Wreath",
+               dependencies: [
+                .product(name: "Antiphony", package: "Antiphony"),
                 .product(name: "ShadowSwift", package: "ShadowSwift"),
+               ]),
+        .target(name: "WreathClient",
+               dependencies: [
+                "Wreath",
+                .product(name: "Antiphony", package: "Antiphony"),
+               ]),
+        .executableTarget(
+            name: "WreathServer",
+            dependencies: [
+                "Wreath",
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Antiphony", package: "Antiphony"),
             ]),
         .testTarget(
