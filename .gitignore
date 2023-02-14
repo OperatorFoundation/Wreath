@@ -4,3 +4,4 @@ xcuserdata/
 .build/
 .DS_Store
 Package.resolved
+spacetime/data/nextIndex
