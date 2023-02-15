@@ -1,3 +1,3 @@
 # Wreath
 
-A description of this package.
+Part of the Discovery Service.
