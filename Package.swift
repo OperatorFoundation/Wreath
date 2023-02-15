@@ -28,8 +28,7 @@ let package = Package(
         .target(name: "WreathClient",
                dependencies: [
                 "Antiphony",
-                "Wreath",
-                .product(name: "BootstrapClient", package: "Bootstrap")
+                "Wreath"
                ]),
         .executableTarget(
             name: "WreathServer",
@@ -38,6 +37,7 @@ let package = Package(
                 "Arcadia",
                 "Wreath",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "BootstrapClient", package: "Bootstrap")
             ]),
         .testTarget(
             name: "WreathTests",
