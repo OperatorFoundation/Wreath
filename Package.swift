@@ -41,7 +41,7 @@ let package = Package(
             ]),
         .testTarget(
             name: "WreathTests",
-            dependencies: ["Wreath"]
+            dependencies: ["Wreath", "WreathServer"]
         ),
     ]
 )
