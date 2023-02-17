@@ -5,3 +5,4 @@ xcuserdata/
 .DS_Store
 Package.resolved
 spacetime/data/nextIndex
+.swiftpm/xcode/xcshareddata/xcschemes/
