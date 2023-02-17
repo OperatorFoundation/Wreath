@@ -57,11 +57,11 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "TestWreathServer"
+            argument = "wreathExampleConfig"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "5533"
+            argument = "2121"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
