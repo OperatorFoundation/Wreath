@@ -15,7 +15,7 @@ import Spacetime
 struct WreathCommandLine: ParsableCommand
 {
     static let configuration = CommandConfiguration(
-        commandName: "wreath",
+        commandName: "WreathServer",
         subcommands: [New.self, Run.self]
     )
     
