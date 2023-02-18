@@ -71,7 +71,7 @@ public class WreathServer
                 switch request
                 {
                     case .getTransportServerConfig(let value):
-                        let result = try self.handler.getTransportServerConfig(transportName: value.transportName, clientID: value.clientID)
+                        let result = try self.handler.getTransportServerConfigs(transportName: value.transportName, clientID: value.clientID)
                         let response = try WreathResponse.getTransportServerConfig(result)
                         let encoder = JSONEncoder()
                         let responseData = try encoder.encode(response)
@@ -80,7 +80,7 @@ public class WreathServer
                             throw WreathServerError.writeFailed
                         }
                     case .getWreathServer(let value):
-                        let result = try self.handler.getWreathServer(clientID: value.clientID)
+                        let result = try self.handler.getWreathServers(clientID: value.clientID)
                         let response = try WreathResponse.getWreathServer(result)
                         let encoder = JSONEncoder()
                         let responseData = try encoder.encode(response)
