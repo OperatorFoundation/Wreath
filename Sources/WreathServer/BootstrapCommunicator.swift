@@ -8,23 +8,25 @@
 import Foundation
 
 import Arcadia
-import BootstrapClient
+import WreathBootstrapClient
 import Gardener
 import TransmissionTypes
 
 class BootstrapCommunicator
 {
-    let bootstrapClient: BootstrapClient
+    let wreathBootstrapClient: WreathBootstrapClient
     let serverID: String
+    let serverIDKey: Key
     let serverIP: String
     let serverPort: Int
-    let bootstrapClientConfigFilename = "bootstrap-client.json"
+    let wreathBootstrapClientConfigFilename = "bootstrap-client.json"
     
     //TODO: Add a timer for send heartbeat
     
-    init(serverID: String, serverIP: String, serverPort: Int, connection: TransmissionTypes.Connection)
+    init(serverID: String, serverIDKey: Key, serverIP: String, serverPort: Int, connection: TransmissionTypes.Connection)
     {
-        self.bootstrapClient = BootstrapClient(connection: connection)
+        self.wreathBootstrapClient = WreathBootstrapClient(connection: connection)
+        self.serverIDKey = serverIDKey
         self.serverID = serverID
         self.serverIP = serverIP
         self.serverPort = serverPort
@@ -34,7 +36,7 @@ class BootstrapCommunicator
     {
         // TODO: Make a test for this and break it out into its own function.
         // Gets a list of other wreath servers
-        let listOfOtherWreathServers = try bootstrapClient.getAddresses(serverID: self.serverID)
+        let listOfOtherWreathServers = try wreathBootstrapClient.getAddresses(serverID: self.serverID)
         print("Received a list of peers from the bootstrap server:")
         for wreathServer in listOfOtherWreathServers
         {
@@ -46,9 +48,9 @@ class BootstrapCommunicator
     func registerNewAddress() throws
     {
         print("Registering new address...")
-        let configURL = File.homeDirectory().appendingPathComponent(bootstrapClientConfigFilename)
-        let client = try BootstrapClient(configURL: configURL)
-        let serverInfo = WreathServerInfo(serverID: self.serverID, serverAddress: "\(serverIP):\(serverPort)")
+        let configURL = File.homeDirectory().appendingPathComponent(wreathBootstrapClientConfigFilename)
+        let client = try WreathBootstrapClient(configURL: configURL)
+        let serverInfo = WreathServerInfo(key: serverIDKey, serverAddress: "\(serverIP):\(serverPort)")
         try client.registerNewAddress(newServer: serverInfo)
         print("New address registered!")
     }
@@ -57,8 +59,8 @@ class BootstrapCommunicator
     func sendHeartbeat() throws
     {
         print("Sending heartbeat...")
-        let configURL = File.homeDirectory().appendingPathComponent(bootstrapClientConfigFilename)
-        let client = try BootstrapClient(configURL: configURL)
+        let configURL = File.homeDirectory().appendingPathComponent(wreathBootstrapClientConfigFilename)
+        let client = try WreathBootstrapClient(configURL: configURL)
         try client.sendHeartbeat(serverID: self.serverID)
         print("Heartbeat sent!")
     }

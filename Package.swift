@@ -16,7 +16,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.1.4"),
         .package(url: "https://github.com/OperatorFoundation/Antiphony", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/Arcadia.git", branch: "main"),
-        .package(url: "https://github.com/OperatorFoundation/Bootstrap.git", branch: "main"),
+        .package(url: "https://github.com/OperatorFoundation/WreathBootstrap.git", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/ShadowSwift", branch: "main")
     ],
     targets: [
@@ -37,7 +37,7 @@ let package = Package(
                 "Arcadia",
                 "Wreath",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                .product(name: "BootstrapClient", package: "Bootstrap")
+                .product(name: "WreathBootstrapClient", package: "WreathBootstrap")
             ]),
         .testTarget(
             name: "WreathTests",
