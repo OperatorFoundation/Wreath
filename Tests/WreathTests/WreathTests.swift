@@ -5,9 +5,11 @@ import XCTest
 
 import Antiphony
 import Arcadia
-import WreathBootstrapClient
 import Gardener
+import Keychain
+import KeychainTypes
 import TransmissionTypes
+import WreathBootstrapClient
 
 final class WreathTests: XCTestCase {
     
@@ -17,8 +19,9 @@ final class WreathTests: XCTestCase {
         print("Test registering new address...")
         let configURL = File.homeDirectory().appendingPathComponent("bootstrap-client.json")
         let client = try WreathBootstrapClient(configURL: configURL)
-        let serverIDKey = Key(data: "exampleServerKey")
-        let serverInfo = WreathServerInfo(key: serverIDKey, serverAddress: "127.0.0.1:1234")
+//        let serverIDKey = Key(data: "exampleServerKey")
+        let serverIDKey = try PublicKey(string: "examplePublicKey")
+        let serverInfo = WreathServerInfo(publicKey: serverIDKey, serverAddress: "127.0.0.1:1234")
         try client.registerNewAddress(newServer: serverInfo)
         print("Test complete!")
     }
@@ -28,7 +31,10 @@ final class WreathTests: XCTestCase {
         print("Testing heartbeat...")
         let configURL = File.homeDirectory().appendingPathComponent("bootstrap-client.json")
         let client = try WreathBootstrapClient(configURL: configURL)
-        try client.sendHeartbeat(serverID: "thisisnotarealid")
+//        try client.sendHeartbeat(serverID: "thisisnotarealid")
+        let clientID = try PublicKey(string: "examplePublicKey")
+        let clientIDKey = try Key(publicKey: clientID)
+        try client.sendHeartbeat(key: clientIDKey)
         print("Test complete!")
     }
 }
