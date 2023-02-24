@@ -32,9 +32,9 @@ final class WreathTests: XCTestCase {
         let configURL = File.homeDirectory().appendingPathComponent("bootstrap-client.json")
         let client = try WreathBootstrapClient(configURL: configURL)
 //        try client.sendHeartbeat(serverID: "thisisnotarealid")
-        let clientID = try PublicKey(string: "examplePublicKey")
-        let clientIDKey = try Key(publicKey: clientID)
-        try client.sendHeartbeat(key: clientIDKey)
+        let serverID = try PublicKey(string: "examplePublicKey")
+        let serverIDKey = try Key(publicKey: serverID)
+        try client.sendHeartbeat(key: serverIDKey)
         print("Test complete!")
     }
 }
