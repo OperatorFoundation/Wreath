@@ -8,7 +8,7 @@ import Arcadia
 import Gardener
 import Keychain
 import KeychainTypes
-import TransmissionTypes
+import Transmission
 import WreathBootstrapClient
 
 final class WreathTests: XCTestCase {
@@ -18,10 +18,20 @@ final class WreathTests: XCTestCase {
     {
         print("Test registering new address...")
         let configURL = File.homeDirectory().appendingPathComponent("bootstrap-client.json")
-        let client = try WreathBootstrapClient(configURL: configURL)
-//        let serverIDKey = Key(data: "exampleServerKey")
-        let serverIDKey = try PublicKey(string: "examplePublicKey")
-        let serverInfo = WreathServerInfo(publicKey: serverIDKey, serverAddress: "127.0.0.1:1234")
+        
+        guard let clientConfig = ClientConfig(url: configURL) else
+        {
+            throw AntiphonyError.invalidConfigFile
+        }
+        
+        guard let connection = TransmissionConnection(host: clientConfig.host, port: clientConfig.port) else
+        {
+            throw AntiphonyError.failedToCreateConnection
+        }
+        
+        let client = WreathBootstrapClient(connection: connection)
+                
+        let serverInfo = WreathServerInfo(publicKey: clientConfig.serverPublicKey, serverAddress: "\(clientConfig.host):\(clientConfig.port)")
         try client.registerNewAddress(newServer: serverInfo)
         print("Test complete!")
     }
@@ -30,11 +40,33 @@ final class WreathTests: XCTestCase {
     {
         print("Testing heartbeat...")
         let configURL = File.homeDirectory().appendingPathComponent("bootstrap-client.json")
-        let client = try WreathBootstrapClient(configURL: configURL)
-//        try client.sendHeartbeat(serverID: "thisisnotarealid")
-        let serverID = try PublicKey(string: "examplePublicKey")
-        let serverIDKey = try Key(publicKey: serverID)
-        try client.sendHeartbeat(key: serverIDKey)
+        
+        guard let clientConfig = ClientConfig(url: configURL) else
+        {
+            throw AntiphonyError.invalidConfigFile
+        }
+        
+        guard let connection = TransmissionConnection(host: clientConfig.host, port: clientConfig.port) else
+        {
+            throw AntiphonyError.failedToCreateConnection
+        }
+        
+        let client = WreathBootstrapClient(connection: connection)
+                
+        let serverInfo = WreathServerInfo(publicKey: clientConfig.serverPublicKey, serverAddress: "\(clientConfig.host):\(clientConfig.port)")
+        try client.registerNewAddress(newServer: serverInfo)
+        
+        guard let serverID = clientConfig.serverPublicKey.arcadiaID else
+        {
+            throw WreathTestsError.failedToCreateServerID
+        }
+        
+        try client.sendHeartbeat(serverID: serverID)
         print("Test complete!")
     }
+}
+
+public enum WreathTestsError: Error
+{
+    case failedToCreateServerID
 }

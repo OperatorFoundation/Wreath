@@ -17,7 +17,7 @@ import TransmissionTypes
 class BootstrapCommunicator
 {
     let wreathBootstrapClient: WreathBootstrapClient
-    let serverID: Key
+    let serverID: ArcadiaID
     let serverIDKey: PublicKey
     let serverIP: String
     let serverPort: Int
@@ -25,7 +25,7 @@ class BootstrapCommunicator
     
     //TODO: Add a timer for send heartbeat
     
-    init(serverID: Key, serverIDKey: PublicKey, serverIP: String, serverPort: Int, connection: TransmissionTypes.Connection)
+    init(serverID: ArcadiaID, serverIDKey: PublicKey, serverIP: String, serverPort: Int, connection: TransmissionTypes.Connection)
     {
         self.wreathBootstrapClient = WreathBootstrapClient(connection: connection)
         self.serverIDKey = serverIDKey
@@ -38,7 +38,7 @@ class BootstrapCommunicator
     {
         // TODO: Make a test for this and break it out into its own function.
         // Gets a list of other wreath servers
-        let listOfOtherWreathServers = try wreathBootstrapClient.getAddresses(key: self.serverID)
+        let listOfOtherWreathServers = try wreathBootstrapClient.getAddresses(serverID: self.serverID)
         print("Received a list of peers from the bootstrap server:")
         for wreathServer in listOfOtherWreathServers
         {
@@ -63,7 +63,7 @@ class BootstrapCommunicator
         print("Sending heartbeat...")
         let configURL = File.homeDirectory().appendingPathComponent(wreathBootstrapClientConfigFilename)
         let client = try WreathBootstrapClient(configURL: configURL)
-        try client.sendHeartbeat(key: self.serverID)
+        try client.sendHeartbeat(serverID: self.serverID)
         print("Heartbeat sent!")
     }
 }

@@ -2,11 +2,12 @@
 //  WreathClient.swift
 //
 //
-//  Created by Clockwork on Feb 14, 2023.
+//  Created by Clockwork on Mar 1, 2023.
 //
 
 import Foundation
 
+import Arcadia
 import Antiphony
 import TransmissionTypes
 import Wreath
@@ -20,9 +21,9 @@ public class WreathClient
         self.connection = connection
     }
 
-    public func getTransportServerConfig(transportName: String, clientID: String) throws -> [TransportConfig]
+    public func getTransportServerConfigs(transportName: String, clientID: ArcadiaID) throws -> [TransportConfig]
     {
-        let message = WreathRequest.getTransportServerConfig(Gettransportserverconfig(transportName: transportName, clientID: clientID))
+        let message = WreathRequest.GettransportserverconfigsRequest(Gettransportserverconfigs(transportName: transportName, clientID: clientID))
         let encoder = JSONEncoder()
         let data = try encoder.encode(message)
         guard self.connection.writeWithLengthPrefix(data: data, prefixSizeInBits: 64) else
@@ -39,16 +40,16 @@ public class WreathClient
         let response = try decoder.decode(WreathResponse.self, from: responseData)
         switch response
         {
-            case .getTransportServerConfig(let value):
+            case .GettransportserverconfigsResponse(let value):
                 return value
             default:
                 throw WreathClientError.badReturnType
         }
     }
 
-    public func getWreathServer(clientID: String) throws -> [ClientConfig]
+    public func getWreathServers(clientID: ArcadiaID) throws -> [ClientConfig]
     {
-        let message = WreathRequest.getWreathServer(Getwreathserver(clientID: clientID))
+        let message = WreathRequest.GetwreathserversRequest(Getwreathservers(clientID: clientID))
         let encoder = JSONEncoder()
         let data = try encoder.encode(message)
         guard self.connection.writeWithLengthPrefix(data: data, prefixSizeInBits: 64) else
@@ -65,7 +66,7 @@ public class WreathClient
         let response = try decoder.decode(WreathResponse.self, from: responseData)
         switch response
         {
-            case .getWreathServer(let value):
+            case .GetwreathserversResponse(let value):
                 return value
             default:
                 throw WreathClientError.badReturnType
