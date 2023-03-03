@@ -59,7 +59,7 @@ extension WreathCommandLine
             }
             
             let wreathLogic = Wreath()
-            let wreathServer = WreathServer(listener: antiphonyListener, handler: wreathLogic)
+            let _ = WreathServer(listener: antiphonyListener, handler: wreathLogic)
             
             antiphony.wait()
         }

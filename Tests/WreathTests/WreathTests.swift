@@ -11,59 +11,47 @@ import KeychainTypes
 import Transmission
 import WreathBootstrapClient
 
-final class WreathTests: XCTestCase {
-    
-    
-    func testRegisterNewAddress() throws
+final class WreathTests: XCTestCase
+{
+    func startClient() throws -> (client: WreathBootstrapClient, clientConfig: ClientConfig)
     {
-        print("Test registering new address...")
-        let configURL = File.homeDirectory().appendingPathComponent("bootstrap-client.json")
+        let configURL = File.homeDirectory().appendingPathComponent("Bootstrap-client.json")
         
-        guard let clientConfig = ClientConfig(url: configURL) else
+        guard let config = ClientConfig(url: configURL) else
         {
             throw AntiphonyError.invalidConfigFile
         }
         
-        guard let connection = TransmissionConnection(host: clientConfig.host, port: clientConfig.port) else
+        guard let connection = TransmissionConnection(host: config.host, port: config.port) else
         {
             throw AntiphonyError.failedToCreateConnection
         }
         
         let client = WreathBootstrapClient(connection: connection)
-                
-        let serverInfo = WreathServerInfo(publicKey: clientConfig.serverPublicKey, serverAddress: "\(clientConfig.host):\(clientConfig.port)")
-        try client.registerNewAddress(newServer: serverInfo)
-        print("Test complete!")
+        
+        return (client, config)
+    }
+        
+    func testBootstrapCommunicatorRegisterNewAddress() throws
+    {
+        let communicator = try BootstrapCommunicator()
+        try communicator.registerNewAddress()
     }
     
-    func testHeartbeat() throws
+    func testBootstrapCommunicatorSendHeartbeat() throws
     {
-        print("Testing heartbeat...")
-        let configURL = File.homeDirectory().appendingPathComponent("bootstrap-client.json")
-        
-        guard let clientConfig = ClientConfig(url: configURL) else
-        {
-            throw AntiphonyError.invalidConfigFile
-        }
-        
-        guard let connection = TransmissionConnection(host: clientConfig.host, port: clientConfig.port) else
-        {
-            throw AntiphonyError.failedToCreateConnection
-        }
-        
-        let client = WreathBootstrapClient(connection: connection)
-                
-        let serverInfo = WreathServerInfo(publicKey: clientConfig.serverPublicKey, serverAddress: "\(clientConfig.host):\(clientConfig.port)")
-        try client.registerNewAddress(newServer: serverInfo)
-        
-        guard let serverID = clientConfig.serverPublicKey.arcadiaID else
-        {
-            throw WreathTestsError.failedToCreateServerID
-        }
-        
-        try client.sendHeartbeat(serverID: serverID)
-        print("Test complete!")
+        let communicator = try BootstrapCommunicator()
+        try communicator.sendHeartbeat()
     }
+    
+    /// Note: This will return an empty array if you have not registered more than one server with this instance of the Bootstrap server
+    func testBootstrapClientGetAddresses() throws
+    {
+        let communicator = try BootstrapCommunicator()
+        let wreathServers = try communicator.findPeers()
+        print("Received a GetAddresses response from the server: \(wreathServers)")
+    }
+    
 }
 
 public enum WreathTestsError: Error
