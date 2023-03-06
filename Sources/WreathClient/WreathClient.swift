@@ -2,15 +2,12 @@
 //  WreathClient.swift
 //
 //
-//  Created by Clockwork on Mar 1, 2023.
+//  Created by Clockwork on Mar 6, 2023.
 //
 
 import Foundation
 
-import Arcadia
-import Antiphony
 import TransmissionTypes
-import Wreath
 
 public class WreathClient
 {
@@ -21,7 +18,7 @@ public class WreathClient
         self.connection = connection
     }
 
-    public func getTransportServerConfigs(transportName: String, clientID: ArcadiaID) throws -> [TransportConfig]
+    public func getTransportServerConfigs(transportName: String, clientID: String) throws -> [TransportConfig]
     {
         let message = WreathRequest.GettransportserverconfigsRequest(Gettransportserverconfigs(transportName: transportName, clientID: clientID))
         let encoder = JSONEncoder()
@@ -47,7 +44,7 @@ public class WreathClient
         }
     }
 
-    public func getWreathServers(clientID: ArcadiaID) throws -> [ClientConfig]
+    public func getWreathServers(clientID: String) throws -> [WreathServerInfo]
     {
         let message = WreathRequest.GetwreathserversRequest(Getwreathservers(clientID: clientID))
         let encoder = JSONEncoder()

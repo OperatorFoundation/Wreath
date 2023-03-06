@@ -2,14 +2,12 @@
 //  WreathServer.swift
 //
 //
-//  Created by Clockwork on Mar 1, 2023.
+//  Created by Clockwork on Mar 6, 2023.
 //
 
 import Foundation
 
 import TransmissionTypes
-import Arcadia
-import Wreath
 
 public class WreathServer
 {
@@ -73,7 +71,7 @@ public class WreathServer
                 {
                     case .GettransportserverconfigsRequest(let value):
                         let result = try self.handler.getTransportServerConfigs(transportName: value.transportName, clientID: value.clientID)
-                        let response = WreathResponse.GettransportserverconfigsResponse(result)
+                        let response = try WreathResponse.GettransportserverconfigsResponse(result)
                         let encoder = JSONEncoder()
                         let responseData = try encoder.encode(response)
                         guard connection.writeWithLengthPrefix(data: responseData, prefixSizeInBits: 64) else
@@ -82,7 +80,7 @@ public class WreathServer
                         }
                     case .GetwreathserversRequest(let value):
                         let result = try self.handler.getWreathServers(clientID: value.clientID)
-                        let response = WreathResponse.GetwreathserversResponse(result)
+                        let response = try WreathResponse.GetwreathserversResponse(result)
                         let encoder = JSONEncoder()
                         let responseData = try encoder.encode(response)
                         guard connection.writeWithLengthPrefix(data: responseData, prefixSizeInBits: 64) else

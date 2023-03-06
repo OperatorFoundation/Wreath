@@ -2,11 +2,8 @@
 //  WreathMessages.swift
 //
 //
-//  Created by Clockwork on Mar 1, 2023.
+//  Created by Clockwork on Mar 6, 2023.
 //
-
-import Arcadia
-import Antiphony
 
 public enum WreathRequest: Codable
 {
@@ -17,9 +14,9 @@ public enum WreathRequest: Codable
 public struct Gettransportserverconfigs: Codable
 {
     public let transportName: String
-    public let clientID: ArcadiaID
+    public let clientID: String
 
-    public init(transportName: String, clientID: ArcadiaID)
+    public init(transportName: String, clientID: String)
     {
         self.transportName = transportName
         self.clientID = clientID
@@ -28,9 +25,9 @@ public struct Gettransportserverconfigs: Codable
 
 public struct Getwreathservers: Codable
 {
-    public let clientID: ArcadiaID
+    public let clientID: String
 
-    public init(clientID: ArcadiaID)
+    public init(clientID: String)
     {
         self.clientID = clientID
     }
@@ -39,5 +36,5 @@ public struct Getwreathservers: Codable
 public enum WreathResponse: Codable
 {
     case GettransportserverconfigsResponse([TransportConfig])
-    case GetwreathserversResponse([ClientConfig])
+    case GetwreathserversResponse([WreathServerInfo])
 }
