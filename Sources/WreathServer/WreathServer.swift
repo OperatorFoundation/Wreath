@@ -13,11 +13,11 @@ import Wreath
 public class WreathServer
 {
     let listener: TransmissionTypes.Listener
-    let handler: Wreath
+    let handler: WreathFrontend
 
     var running: Bool = true
 
-    public init(listener: TransmissionTypes.Listener, handler: Wreath)
+    public init(listener: TransmissionTypes.Listener, handler: WreathFrontend)
     {
         self.listener = listener
         self.handler = handler

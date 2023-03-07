@@ -20,7 +20,8 @@ struct WreathCommandLine: ParsableCommand
     )
     
     static let clientConfigURL =  File.homeDirectory().appendingPathComponent("wreath-client.json")
-    static let serverConfigURL = File.homeDirectory().appendingPathComponent("wreath-server.json")
+    static let serverFrontendConfigURL = File.homeDirectory().appendingPathComponent("wreath-server-frontend.json")
+    static let serverBackendConfigURL = File.homeDirectory().appendingPathComponent("wreath-server-backend.json")
     static let loggerLabel = "org.OperatorFoundation.WreathLogger"
 }
 
@@ -38,8 +39,9 @@ extension WreathCommandLine
             print("Running Wreath.new")
             let keychainDirectoryURL = File.homeDirectory().appendingPathComponent(".wreath-server")
             let keychainLabel = "Wreath.KeyAgreement"
-            
-            try Antiphony.generateNew(name: name, port: port, serverConfigURL: serverConfigURL, clientConfigURL: clientConfigURL, keychainURL: keychainDirectoryURL, keychainLabel: keychainLabel)
+
+            // FIXME
+            try Antiphony.generateNew(name: name, port: port, serverConfigURL: serverFrontendConfigURL, clientConfigURL: clientConfigURL, keychainURL: keychainDirectoryURL, keychainLabel: keychainLabel)
         }
     }
 }
@@ -48,18 +50,22 @@ extension WreathCommandLine
 {
     struct Run: ParsableCommand
     {
-        func run() throws {
+        func run() throws
+        {
             print("Running Wreath.run")
-            let antiphony = try Antiphony(serverConfigURL: serverConfigURL, loggerLabel: loggerLabel, capabilities: Capabilities(.display, .networkListen))
+
+            let state = try WreathState()
+
+            let antiphonyFrontend = try Antiphony(serverConfigURL: serverFrontendConfigURL, loggerLabel: loggerLabel, capabilities: Capabilities(.display, .networkListen))
             
-            guard let antiphonyListener = antiphony.listener else
+            guard let antiphonyFrontendListener = antiphonyFrontend.listener else
             {
-                print("Failed to create a listener")
+                print("Failed to create a frontend listener")
                 return
             }
-            
-            let wreathLogic = try Wreath()
-            let _ = WreathServer(listener: antiphonyListener, handler: wreathLogic)
+
+            let wreathFrontendLogic = try WreathFrontend(state: state)
+            let _ = WreathFrontendServer(listener: antiphonyListener, handler: wreathFrontendLogic)
             
             antiphony.wait()
         }

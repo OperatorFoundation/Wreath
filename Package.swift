@@ -14,6 +14,7 @@ let package = Package(
             targets: ["WreathClient"])],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.1.4"),
+        .package(url: "https://github.com/OperatorFoundation/Abacus", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/Antiphony", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/Arcadia.git", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/WreathBootstrap.git", branch: "main"),
@@ -33,6 +34,7 @@ let package = Package(
         .executableTarget(
             name: "WreathServer",
             dependencies: [
+                "Abacus",
                 "Antiphony",
                 "Arcadia",
                 "Wreath",

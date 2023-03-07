@@ -13,13 +13,16 @@ import ShadowSwift
 import Wreath
 import KeychainTypes
 
-public class Wreath
+public class WreathFrontend
 {
+    let state: WreathState
     let communicator: BootstrapCommunicator
     
-    init() throws
+    init(state: WreathState) throws
     {
-        communicator = try BootstrapCommunicator()
+        self.state = state
+
+        self.communicator = try BootstrapCommunicator()
     }
     
     public func getTransportServerConfigs(transportName: String, clientID: String) throws -> [TransportConfig]
