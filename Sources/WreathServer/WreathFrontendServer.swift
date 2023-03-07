@@ -1,5 +1,5 @@
 //
-//  WreathServer.swift
+//  WreathFrontendServer.swift
 //
 //
 //  Created by Clockwork on Mar 6, 2023.
@@ -10,7 +10,7 @@ import Foundation
 import TransmissionTypes
 import Wreath
 
-public class WreathServer
+public class WreathFrontendServer
 {
     let listener: TransmissionTypes.Listener
     let handler: WreathFrontend

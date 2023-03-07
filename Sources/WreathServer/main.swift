@@ -20,6 +20,7 @@ struct WreathCommandLine: ParsableCommand
     )
     
     static let clientConfigURL =  File.homeDirectory().appendingPathComponent("wreath-client.json")
+    static let serverConfigURL = File.homeDirectory().appendingPathComponent("wreath-server.json")
     static let serverFrontendConfigURL = File.homeDirectory().appendingPathComponent("wreath-server-frontend.json")
     static let serverBackendConfigURL = File.homeDirectory().appendingPathComponent("wreath-server-backend.json")
     static let loggerLabel = "org.OperatorFoundation.WreathLogger"
