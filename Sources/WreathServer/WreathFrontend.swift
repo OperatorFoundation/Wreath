@@ -27,23 +27,17 @@ public class WreathFrontend
     
     public func getTransportServerConfigs(transportName: String, clientID: String) throws -> [TransportConfig]
     {
-        // FIXME: This is just a demo until communications channel work is complete
-        let privateKeyString = "RaHouPFVOazVSqInoMm8BSO9o/7J493y4cUVofmwXAU="
-        
-        guard let privateKeyBytes = Data(base64: privateKeyString) else
+        let allConfigs = self.state.getConfigs()
+        return allConfigs.filter
         {
-            throw KeyError.publicKeySerializationFailed
+            config in
+
+            switch config
+            {
+                case .shadow(_):
+                    return transportName == "shadow"
+            }
         }
-        guard let privateKey = try? PrivateKey(type: .P256KeyAgreement, data: privateKeyBytes) else
-        {
-            throw KeyError.publicKeySerializationFailed
-        }
-        
-        let publicKey = privateKey.publicKey
-        let shadowConfig = ShadowConfig.ShadowClientConfig(serverAddress: "8.8.8.8", serverPublicKey: publicKey, mode: .DARKSTAR)
-        let demoTransportConfig = TransportConfig.shadow(shadowConfig)
-        
-        return [demoTransportConfig]
     }
     
     public func getWreathServers(clientID: String) throws -> [WreathServerInfo]
