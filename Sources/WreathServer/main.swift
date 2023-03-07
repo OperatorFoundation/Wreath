@@ -43,6 +43,14 @@ extension WreathCommandLine
 
             // FIXME
             try Antiphony.generateNew(name: name, port: port, serverConfigURL: serverFrontendConfigURL, clientConfigURL: clientConfigURL, keychainURL: keychainDirectoryURL, keychainLabel: keychainLabel)
+
+            let frontendConfig = ServerConfig(url: serverFrontendConfigURL)
+            var backendConfig = frontendConfig
+            let parts = backendConfig.serverAddress.split(separator: ":").map { String($0) }
+            guard parts.count > 0 else
+            {
+                throw CommandLineError.badServerAddress(backendConfig.serverAddress)
+            }
         }
     }
 }
@@ -71,6 +79,11 @@ extension WreathCommandLine
             antiphony.wait()
         }
     }
+}
+
+public enum CommandLineError: Error
+{
+    case badServerAddress(String)
 }
 
 WreathCommandLine.main()
