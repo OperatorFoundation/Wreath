@@ -8,6 +8,7 @@
 import Foundation
 
 import TransmissionTypes
+import Wreath
 
 public class WreathServer
 {

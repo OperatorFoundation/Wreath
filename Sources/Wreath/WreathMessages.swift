@@ -5,6 +5,8 @@
 //  Created by Clockwork on Mar 6, 2023.
 //
 
+import Arcadia
+
 public enum WreathRequest: Codable
 {
     case GettransportserverconfigsRequest(Gettransportserverconfigs)
