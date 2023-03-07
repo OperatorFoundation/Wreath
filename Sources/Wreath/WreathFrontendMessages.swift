@@ -1,13 +1,13 @@
 //
-//  WreathMessages.swift
+//  WreathFrontendMessages.swift
 //
 //
-//  Created by Clockwork on Mar 6, 2023.
+//  Created by Clockwork on Mar 7, 2023.
 //
 
 import Arcadia
 
-public enum WreathRequest: Codable
+public enum WreathFrontendRequest: Codable
 {
     case GettransportserverconfigsRequest(Gettransportserverconfigs)
     case GetwreathserversRequest(Getwreathservers)
@@ -35,7 +35,7 @@ public struct Getwreathservers: Codable
     }
 }
 
-public enum WreathResponse: Codable
+public enum WreathFrontendResponse: Codable
 {
     case GettransportserverconfigsResponse([TransportConfig])
     case GetwreathserversResponse([WreathServerInfo])

@@ -1,8 +1,8 @@
 //
-//  WreathClient.swift
+//  WreathFrontendClient.swift
 //
 //
-//  Created by Clockwork on Mar 6, 2023.
+//  Created by Clockwork on Mar 7, 2023.
 //
 
 import Foundation
@@ -11,7 +11,7 @@ import Arcadia
 import TransmissionTypes
 import Wreath
 
-public class WreathClient
+public class WreathFrontendClient
 {
     let connection: TransmissionTypes.Connection
 
@@ -22,58 +22,58 @@ public class WreathClient
 
     public func getTransportServerConfigs(transportName: String, clientID: String) throws -> [TransportConfig]
     {
-        let message = WreathRequest.GettransportserverconfigsRequest(Gettransportserverconfigs(transportName: transportName, clientID: clientID))
+        let message = WreathFrontendRequest.GettransportserverconfigsRequest(Gettransportserverconfigs(transportName: transportName, clientID: clientID))
         let encoder = JSONEncoder()
         let data = try encoder.encode(message)
         guard self.connection.writeWithLengthPrefix(data: data, prefixSizeInBits: 64) else
         {
-            throw WreathClientError.writeFailed
+            throw WreathFrontendClientError.writeFailed
         }
 
         guard let responseData = self.connection.readWithLengthPrefix(prefixSizeInBits: 64) else
         {
-            throw WreathClientError.readFailed
+            throw WreathFrontendClientError.readFailed
         }
 
         let decoder = JSONDecoder()
-        let response = try decoder.decode(WreathResponse.self, from: responseData)
+        let response = try decoder.decode(WreathFrontendResponse.self, from: responseData)
         switch response
         {
             case .GettransportserverconfigsResponse(let value):
                 return value
             default:
-                throw WreathClientError.badReturnType
+                throw WreathFrontendClientError.badReturnType
         }
     }
 
     public func getWreathServers(clientID: String) throws -> [WreathServerInfo]
     {
-        let message = WreathRequest.GetwreathserversRequest(Getwreathservers(clientID: clientID))
+        let message = WreathFrontendRequest.GetwreathserversRequest(Getwreathservers(clientID: clientID))
         let encoder = JSONEncoder()
         let data = try encoder.encode(message)
         guard self.connection.writeWithLengthPrefix(data: data, prefixSizeInBits: 64) else
         {
-            throw WreathClientError.writeFailed
+            throw WreathFrontendClientError.writeFailed
         }
 
         guard let responseData = self.connection.readWithLengthPrefix(prefixSizeInBits: 64) else
         {
-            throw WreathClientError.readFailed
+            throw WreathFrontendClientError.readFailed
         }
 
         let decoder = JSONDecoder()
-        let response = try decoder.decode(WreathResponse.self, from: responseData)
+        let response = try decoder.decode(WreathFrontendResponse.self, from: responseData)
         switch response
         {
             case .GetwreathserversResponse(let value):
                 return value
             default:
-                throw WreathClientError.badReturnType
+                throw WreathFrontendClientError.badReturnType
         }
     }
 }
 
-public enum WreathClientError: Error
+public enum WreathFrontendClientError: Error
 {
     case connectionRefused(String, Int)
     case writeFailed

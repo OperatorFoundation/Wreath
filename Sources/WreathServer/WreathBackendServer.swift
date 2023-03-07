@@ -1,5 +1,5 @@
 //
-//  WreathFrontendServer.swift
+//  WreathBackendServer.swift
 //
 //
 //  Created by Clockwork on Mar 7, 2023.
@@ -11,14 +11,14 @@ import Arcadia
 import TransmissionTypes
 import Wreath
 
-public class WreathFrontendServer
+public class WreathBackendServer
 {
     let listener: TransmissionTypes.Listener
-    let handler: WreathFrontend
+    let handler: WreathBackend
 
     var running: Bool = true
 
-    public init(listener: TransmissionTypes.Listener, handler: WreathFrontend)
+    public init(listener: TransmissionTypes.Listener, handler: WreathBackend)
     {
         self.listener = listener
         self.handler = handler
@@ -64,30 +64,30 @@ public class WreathFrontendServer
             {
                 guard let requestData = connection.readWithLengthPrefix(prefixSizeInBits: 64) else
                 {
-                    throw WreathFrontendServerError.readFailed
+                    throw WreathBackendServerError.readFailed
                 }
 
                 let decoder = JSONDecoder()
-                let request = try decoder.decode(WreathFrontendRequest.self, from: requestData)
+                let request = try decoder.decode(WreathBackendRequest.self, from: requestData)
                 switch request
                 {
-                    case .GettransportserverconfigsRequest(let value):
-                        let result = try self.handler.getTransportServerConfigs(transportName: value.transportName, clientID: value.clientID)
-                        let response = try WreathFrontendResponse.GettransportserverconfigsResponse(result)
+                    case .AddtransportserverconfigRequest(let value):
+                        self.handler.addTransportServerConfig(config: value.config)
+                        let response = WreathBackendResponse.AddtransportserverconfigResponse
                         let encoder = JSONEncoder()
                         let responseData = try encoder.encode(response)
                         guard connection.writeWithLengthPrefix(data: responseData, prefixSizeInBits: 64) else
                         {
-                            throw WreathFrontendServerError.writeFailed
+                            throw WreathBackendServerError.writeFailed
                         }
-                    case .GetwreathserversRequest(let value):
-                        let result = try self.handler.getWreathServers(clientID: value.clientID)
-                        let response = try WreathFrontendResponse.GetwreathserversResponse(result)
+                    case .RemovetransportserverconfigRequest(let value):
+                        self.handler.removeTransportServerConfig(config: value.config)
+                        let response = WreathBackendResponse.RemovetransportserverconfigResponse
                         let encoder = JSONEncoder()
                         let responseData = try encoder.encode(response)
                         guard connection.writeWithLengthPrefix(data: responseData, prefixSizeInBits: 64) else
                         {
-                            throw WreathFrontendServerError.writeFailed
+                            throw WreathBackendServerError.writeFailed
                         }
                 }
             }
@@ -100,7 +100,7 @@ public class WreathFrontendServer
     }
 }
 
-public enum WreathFrontendServerError: Error
+public enum WreathBackendServerError: Error
 {
     case connectionRefused(String, Int)
     case writeFailed
