@@ -7,19 +7,24 @@
 
 import Foundation
 
+import Arcadia
+import ShadowSwift
 import Wreath
 
 public class WreathState
 {
-    public var configs: Set<TransportConfig> = Set<TransportConfig>()
+    public var shadowConfigs = Set<TransportConfig>()
 
     let lock = DispatchSemaphore(value: 1)
+    let arcadia: Arcadia = Arcadia()
+
+    var shadowInfos: [WreathServerInfo] = []
 
     public init() throws
     {
     }
 
-    public func getConfigs() -> [TransportConfig]
+    public func getConfigs(transportName: String, clientID: ArcadiaID) -> [TransportConfig]
     {
         defer
         {
@@ -27,10 +32,23 @@ public class WreathState
         }
         self.lock.wait()
 
-        return [TransportConfig](self.configs)
+        switch transportName
+        {
+            case "shadow":
+                let infos = self.arcadia.findServers(for: clientID)
+                return infos.compactMap
+                {
+                    info in
+
+                    return infoToConfig(info)
+                }
+
+            default:
+                return []
+        }
     }
 
-    public func add(config: TransportConfig)
+    public func add(config: TransportConfig) throws
     {
         defer
         {
@@ -38,10 +56,18 @@ public class WreathState
         }
         self.lock.wait()
 
-        self.configs.insert(config)
+        switch config
+        {
+            case .shadow(_):
+                self.shadowConfigs.insert(config)
+
+                let info = configToInfo(config)
+                self.shadowInfos.append(info)
+                try self.arcadia.addServer(wreathServer: info)
+        }
     }
 
-    public func remove(config: TransportConfig)
+    public func remove(config: TransportConfig) throws
     {
         defer
         {
@@ -49,6 +75,42 @@ public class WreathState
         }
         self.lock.wait()
 
-        self.remove(config: config)
+        switch config
+        {
+            case .shadow(_):
+                self.shadowConfigs.remove(config)
+
+                let info = configToInfo(config)
+                self.shadowInfos = self.shadowInfos.filter
+                {
+                    shadowInfo in
+
+                    shadowInfo.serverAddress != info.serverAddress
+                }
+                try self.arcadia.removeServer(wreathServer: info)
+        }
+    }
+
+    func configToInfo(_ config: TransportConfig) -> WreathServerInfo
+    {
+        switch config
+        {
+            case .shadow(let shadowConfig):
+                return WreathServerInfo(publicKey: shadowConfig.serverPublicKey, serverAddress: shadowConfig.serverAddress)
+        }
+    }
+
+    func infoToConfig(_ info: WreathServerInfo) -> TransportConfig?
+    {
+        return self.shadowConfigs.first
+        {
+            config in
+
+            switch config
+            {
+                case .shadow(let shadowConfig):
+                    return shadowConfig.serverAddress == info.serverAddress
+            }
+        }
     }
 }

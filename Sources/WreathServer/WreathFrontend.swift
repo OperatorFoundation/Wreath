@@ -9,6 +9,7 @@ import Foundation
 
 import Antiphony
 import Arcadia
+import Datable
 import ShadowSwift
 import Wreath
 import KeychainTypes
@@ -26,17 +27,10 @@ public class WreathFrontend
     
     public func getTransportServerConfigs(transportName: String, clientID: String) throws -> [TransportConfig]
     {
-        let allConfigs = self.state.getConfigs()
-        return allConfigs.filter
-        {
-            config in
+        let decoder = JSONDecoder()
+        let arcadiaID = try decoder.decode(ArcadiaID.self, from: clientID.data)
 
-            switch config
-            {
-                case .shadow(_):
-                    return transportName == "shadow"
-            }
-        }
+        return self.state.getConfigs(transportName: transportName, clientID: arcadiaID)
     }
     
     public func getWreathServers(clientID: String) throws -> [WreathServerInfo]

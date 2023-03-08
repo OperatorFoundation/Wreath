@@ -24,11 +24,25 @@ public class WreathBackend
 
     public func addTransportServerConfig(config: TransportConfig)
     {
-        self.state.add(config: config)
+        do
+        {
+            try self.state.add(config: config)
+        }
+        catch
+        {
+            print(error)
+        }
     }
 
     public func removeTransportServerConfig(config: TransportConfig)
     {
-        self.state.remove(config: config)
+        do
+        {
+            try self.state.remove(config: config)
+        }
+        catch
+        {
+            print(error)
+        }
     }
 }
