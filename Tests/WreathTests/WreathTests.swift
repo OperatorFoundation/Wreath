@@ -86,7 +86,7 @@ final class WreathTests: XCTestCase
         
         let transportConfig = TransportConfig.shadow(shadowConfig)
         try wreathBackendClient.addTransportServerConfig(config: transportConfig)
-        
+        try wreathBackendClient.removeTransportServerConfig(config: transportConfig)
     }
     
 }
