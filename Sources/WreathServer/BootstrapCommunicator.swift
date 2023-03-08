@@ -16,12 +16,10 @@ import Keychain
 
 class BootstrapCommunicator
 {
+    let wreathBootstrapClientConfigFilename = "bootstrap-client.json"
     let wreathBootstrapClient: WreathBootstrapClient
     let config: ClientConfig
     let serverID:  ArcadiaID
-    let wreathBootstrapClientConfigFilename = "bootstrap-client.json"
-    
-    //TODO: Add a timer for send heartbeat
     
     init(config: ClientConfig, connection: TransmissionTypes.Connection) throws
     {
@@ -33,6 +31,10 @@ class BootstrapCommunicator
         self.serverID = arcadiaID
         self.wreathBootstrapClient = WreathBootstrapClient(connection: connection)
         self.config = config
+        
+        // Schedule a timer to send a heartbeat every 20 seconds
+//        let timer = Timer.scheduledTimer(timeInterval: 60.0, target: self, selector: #selector(sendHeartbeat), userInfo: nil, repeats: true)
+//        timer.tolerance = 2.0
     }
     
     convenience init(configURL: URL) throws
@@ -80,7 +82,7 @@ class BootstrapCommunicator
     }
     
     /// A keepalive function that lets the Bootstrap server know that the given wreath server is still active
-    func sendHeartbeat() throws
+    @objc func sendHeartbeat() throws
     {
         print("Sending heartbeat...")
         try wreathBootstrapClient.sendHeartbeat(serverID: self.serverID)

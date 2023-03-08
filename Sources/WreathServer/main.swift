@@ -74,7 +74,7 @@ extension WreathCommandLine
             print("Running Wreath.run")
 
             let state = try WreathState()
-            
+                        
             Task
             {
                 try runFrontend(state: state)
@@ -85,7 +85,7 @@ extension WreathCommandLine
         
         func runFrontend(state: WreathState) throws
         {
-            let antiphonyFrontend = try Antiphony(serverConfigURL: serverFrontendConfigURL, loggerLabel: loggerLabel, capabilities: Capabilities(.display, .networkListen))
+            let antiphonyFrontend = try Antiphony(serverConfigURL: serverFrontendConfigURL, loggerLabel: loggerLabel, capabilities: Capabilities(.display, .networkListen), label: "WreathFrontend")
             
             guard let antiphonyFrontendListener = antiphonyFrontend.listener else
             {
@@ -101,7 +101,7 @@ extension WreathCommandLine
         
         func runBackend(state: WreathState) throws
         {
-            let antiphonyBackend = try Antiphony(serverConfigURL: serverBackendConfigURL, loggerLabel: loggerLabel, capabilities: Capabilities(.display, .networkListen))
+            let antiphonyBackend = try Antiphony(serverConfigURL: serverBackendConfigURL, loggerLabel: loggerLabel, capabilities: Capabilities(.display, .networkListen), label: "WreathBackend")
             
             guard let antiphonyBackendListener = antiphonyBackend.listener else
             {
