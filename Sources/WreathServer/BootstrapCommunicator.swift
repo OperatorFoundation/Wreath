@@ -21,6 +21,7 @@ class BootstrapCommunicator
     let wreathBootstrapClient: WreathBootstrapClient
     let config: ClientConfig
     let serverID:  ArcadiaID
+    var timer: Timer? = nil
 
     init(config: ClientConfig, connection: TransmissionTypes.Connection) throws
     {
@@ -34,8 +35,22 @@ class BootstrapCommunicator
         self.config = config
         
         // Schedule a timer to send a heartbeat every 20 seconds
-//        let timer = Timer.scheduledTimer(timeInterval: 60.0, target: self, selector: #selector(sendHeartbeat), userInfo: nil, repeats: true)
-//        timer.tolerance = 2.0
+        self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true)
+        {
+            timer in
+
+            timer.tolerance = 2.0
+
+            do
+            {
+                try self.sendHeartbeat()
+            }
+            catch
+            {
+                print(error)
+                return
+            }
+        }
     }
     
     convenience init(configURL: URL) throws
@@ -83,7 +98,7 @@ class BootstrapCommunicator
     }
     
     /// A keepalive function that lets the Bootstrap server know that the given wreath server is still active
-    @objc func sendHeartbeat() throws
+    func sendHeartbeat() throws
     {
         print("Sending heartbeat...")
         try wreathBootstrapClient.sendHeartbeat(serverID: self.serverID)
