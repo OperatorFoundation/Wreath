@@ -66,7 +66,8 @@ public class WreathBackendServer
                 {
                     throw WreathBackendServerError.readFailed
                 }
-
+                
+                print("-> Wreath Backend received a request: \n\(requestData.string)")
                 let decoder = JSONDecoder()
                 let request = try decoder.decode(WreathBackendRequest.self, from: requestData)
                 switch request
@@ -76,6 +77,7 @@ public class WreathBackendServer
                         let response = WreathBackendResponse.AddtransportserverconfigResponse
                         let encoder = JSONEncoder()
                         let responseData = try encoder.encode(response)
+                        print("-> Wreath Backend sending a response: \n\(responseData.string)")
                         guard connection.writeWithLengthPrefix(data: responseData, prefixSizeInBits: 64) else
                         {
                             throw WreathBackendServerError.writeFailed
@@ -85,6 +87,7 @@ public class WreathBackendServer
                         let response = WreathBackendResponse.RemovetransportserverconfigResponse
                         let encoder = JSONEncoder()
                         let responseData = try encoder.encode(response)
+                        print("-> Wreath Backend sending a response: \n\(responseData.string)")
                         guard connection.writeWithLengthPrefix(data: responseData, prefixSizeInBits: 64) else
                         {
                             throw WreathBackendServerError.writeFailed
