@@ -38,15 +38,19 @@ class BootstrapCommunicator
         self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true)
         {
             timer in
+            
+            print("Timer is up...")
 
             timer.tolerance = 2.0
 
             do
             {
+                print("Trying to send heartbeat...")
                 try self.sendHeartbeat()
             }
             catch
             {
+                print("Failed to send heartbeat: ")
                 print(error)
                 return
             }
