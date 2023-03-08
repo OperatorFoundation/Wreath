@@ -74,6 +74,7 @@ extension WreathCommandLine
             print("Running Wreath.run")
 
             let server = try WreathServer(serverFrontendConfigURL: WreathCommandLine.serverFrontendConfigURL, serverBackendConfigURL: WreathCommandLine.serverBackendConfigURL, loggerLabel: WreathCommandLine.loggerLabel)
+            server.wait()
         }
     }
 }

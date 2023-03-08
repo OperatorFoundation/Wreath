@@ -21,8 +21,9 @@ public class WreathFrontend
     init(state: WreathState) throws
     {
         self.state = state
-
         self.communicator = try BootstrapCommunicator()
+        let timer = Timer.scheduledTimer(timeInterval: 60.0, target: self, selector: #selector(self.communicator.sendHeartbeat), userInfo: nil, repeats: true)
+        timer.tolerance = 2.0
     }
     
     public func getTransportServerConfigs(transportName: String, clientID: String) throws -> [TransportConfig]

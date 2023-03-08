@@ -16,13 +16,10 @@ import KeychainTypes
 public class WreathBackend
 {
     let state: WreathState
-    let communicator: BootstrapCommunicator
 
     init(state: WreathState) throws
     {
         self.state = state
-
-        self.communicator = try BootstrapCommunicator()
     }
 
     public func addTransportServerConfig(config: TransportConfig)

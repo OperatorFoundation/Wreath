@@ -15,6 +15,7 @@ public class WreathServer
     let state: WreathState
     let frontend: WreathFrontendServer
     let backend: WreathBackendServer
+    let antiphonyBackend: Antiphony
 
     public init(serverFrontendConfigURL: URL, serverBackendConfigURL: URL, loggerLabel: String) throws
     {
@@ -30,17 +31,20 @@ public class WreathServer
         let wreathFrontendLogic = try WreathFrontend(state: state)
         self.frontend = WreathFrontendServer(listener: antiphonyFrontendListener, handler: wreathFrontendLogic)
 
-        let antiphonyBackend = try Antiphony(serverConfigURL: serverBackendConfigURL, loggerLabel: loggerLabel, capabilities: Capabilities(.display, .networkListen))
+        self.antiphonyBackend = try Antiphony(serverConfigURL: serverBackendConfigURL, loggerLabel: loggerLabel, capabilities: Capabilities(.display, .networkListen))
 
-        guard let antiphonyBackendListener = antiphonyBackend.listener else
+        guard let antiphonyBackendListener = self.antiphonyBackend.listener else
         {
             throw WreathServerError.failedToLaunchBackend
         }
 
         let wreathBackendLogic = try WreathBackend(state: state)
         self.backend = WreathBackendServer(listener: antiphonyBackendListener, handler: wreathBackendLogic)
+    }
 
-        antiphonyBackend.wait()
+    public func wait()
+    {
+        self.antiphonyBackend.wait()
     }
 }
 
