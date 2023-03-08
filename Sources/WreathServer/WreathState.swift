@@ -13,7 +13,7 @@ public class WreathState
 {
     public var configs: Set<TransportConfig> = Set<TransportConfig>()
 
-    let lock = DispatchSemaphore(value: 0)
+    let lock = DispatchSemaphore(value: 1)
 
     public init() throws
     {
