@@ -16,11 +16,12 @@ import Keychain
 
 class BootstrapCommunicator
 {
+    static let wreathBootstrapClientConfigFilename = "bootstrap-client.json"
+
     let wreathBootstrapClient: WreathBootstrapClient
     let config: ClientConfig
     let serverID:  ArcadiaID
-    let wreathBootstrapClientConfigFilename = "bootstrap-client.json"
-    
+
     //TODO: Add a timer for send heartbeat
     
     init(config: ClientConfig, connection: TransmissionTypes.Connection) throws
@@ -52,7 +53,7 @@ class BootstrapCommunicator
     
     convenience init() throws
     {
-        let configURL = File.homeDirectory().appendingPathComponent("Bootstrap-client.json")
+        let configURL = File.homeDirectory().appendingPathComponent(Self.wreathBootstrapClientConfigFilename)
         try self.init(configURL: configURL)
     }
     

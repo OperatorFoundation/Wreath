@@ -49,7 +49,7 @@ extension WreathCommandLine
                 throw CommandLineError.frontendConfigNotFound
             }
             
-            var backendServerConfig = ServerConfig(name: frontendServerConfig.name, host: frontendServerConfig.host, port: frontendServerConfig.port + 1)
+            let backendServerConfig = ServerConfig(name: frontendServerConfig.name, host: frontendServerConfig.host, port: frontendServerConfig.port + 1)
             try backendServerConfig.save(to: serverBackendConfigURL)
             print("Wrote config to \(serverBackendConfigURL.path)")
             
@@ -58,7 +58,7 @@ extension WreathCommandLine
                 throw CommandLineError.frontendConfigNotFound
             }
             
-            var backendClientConfig = ClientConfig(name: frontendClientConfig.name, host: frontendClientConfig.host, port: frontendClientConfig.port + 1, serverPublicKey: frontendClientConfig.serverPublicKey)
+            let backendClientConfig = ClientConfig(name: frontendClientConfig.name, host: frontendClientConfig.host, port: frontendClientConfig.port + 1, serverPublicKey: frontendClientConfig.serverPublicKey)
             try backendClientConfig.save(to: clientBackendConfigURL)
             print("Wrote config to \(clientBackendConfigURL.path)")
         }
@@ -73,46 +73,7 @@ extension WreathCommandLine
         {
             print("Running Wreath.run")
 
-            let state = try WreathState()
-            
-            Task
-            {
-                try runFrontend(state: state)
-            }
-            
-            try runBackend(state: state)
-        }
-        
-        func runFrontend(state: WreathState) throws
-        {
-            let antiphonyFrontend = try Antiphony(serverConfigURL: serverFrontendConfigURL, loggerLabel: loggerLabel, capabilities: Capabilities(.display, .networkListen))
-            
-            guard let antiphonyFrontendListener = antiphonyFrontend.listener else
-            {
-                print("Failed to create a frontend listener")
-                return
-            }
-
-            let wreathFrontendLogic = try WreathFrontend(state: state)
-            let _ = WreathFrontendServer(listener: antiphonyFrontendListener, handler: wreathFrontendLogic)
-            
-            antiphonyFrontend.wait()
-        }
-        
-        func runBackend(state: WreathState) throws
-        {
-            let antiphonyBackend = try Antiphony(serverConfigURL: serverBackendConfigURL, loggerLabel: loggerLabel, capabilities: Capabilities(.display, .networkListen))
-            
-            guard let antiphonyBackendListener = antiphonyBackend.listener else
-            {
-                print("Failed to create a frontend listener")
-                return
-            }
-
-            let wreathBackendLogic = try WreathBackend(state: state)
-            let _ = WreathBackendServer(listener: antiphonyBackendListener, handler: wreathBackendLogic)
-            
-            antiphonyBackend.wait()
+            let server = try WreathServer(serverFrontendConfigURL: WreathCommandLine.serverFrontendConfigURL, serverBackendConfigURL: WreathCommandLine.serverBackendConfigURL, loggerLabel: WreathCommandLine.loggerLabel)
         }
     }
 }
