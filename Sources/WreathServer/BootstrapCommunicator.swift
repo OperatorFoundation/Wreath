@@ -51,6 +51,8 @@ class BootstrapCommunicator
                 return
             }
         }
+        
+        try self.registerNewAddress()
     }
     
     convenience init(configURL: URL) throws
