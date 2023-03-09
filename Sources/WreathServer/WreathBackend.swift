@@ -17,7 +17,7 @@ public class WreathBackend
 {
     let state: WreathState
 
-    init(state: WreathState) throws
+    init(state: WreathState)
     {
         self.state = state
     }

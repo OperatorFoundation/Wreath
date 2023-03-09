@@ -2,7 +2,7 @@
 //  WreathBackendServer.swift
 //
 //
-//  Created by Clockwork on Mar 7, 2023.
+//  Created by Clockwork on Mar 8, 2023.
 //
 
 import Foundation
@@ -66,11 +66,9 @@ public class WreathBackendServer
                 {
                     throw WreathBackendServerError.readFailed
                 }
-                
-                print("-> Wreath Backend received a request: \n\(requestData.string)")
+
                 let decoder = JSONDecoder()
                 let request = try decoder.decode(WreathBackendRequest.self, from: requestData)
-                print("-> Wreath Backend decoded request: \n\(request)")
                 switch request
                 {
                     case .AddtransportserverconfigRequest(let value):
@@ -78,18 +76,15 @@ public class WreathBackendServer
                         let response = WreathBackendResponse.AddtransportserverconfigResponse
                         let encoder = JSONEncoder()
                         let responseData = try encoder.encode(response)
-                        print("-> Wreath Backend sending a response: \n\(responseData.string)")
                         guard connection.writeWithLengthPrefix(data: responseData, prefixSizeInBits: 64) else
                         {
                             throw WreathBackendServerError.writeFailed
                         }
                     case .RemovetransportserverconfigRequest(let value):
-                        print("-> case .RemovetransportserverconfigRequest")
                         self.handler.removeTransportServerConfig(config: value.config)
                         let response = WreathBackendResponse.RemovetransportserverconfigResponse
                         let encoder = JSONEncoder()
                         let responseData = try encoder.encode(response)
-                        print("-> Wreath Backend sending a response: \n\(responseData.string)")
                         guard connection.writeWithLengthPrefix(data: responseData, prefixSizeInBits: 64) else
                         {
                             throw WreathBackendServerError.writeFailed

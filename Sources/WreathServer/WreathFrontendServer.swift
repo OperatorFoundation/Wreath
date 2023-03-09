@@ -2,7 +2,7 @@
 //  WreathFrontendServer.swift
 //
 //
-//  Created by Clockwork on Mar 7, 2023.
+//  Created by Clockwork on Mar 8, 2023.
 //
 
 import Foundation
@@ -72,8 +72,8 @@ public class WreathFrontendServer
                 switch request
                 {
                     case .GettransportserverconfigsRequest(let value):
-                        let result = try self.handler.getTransportServerConfigs(transportName: value.transportName, clientID: value.clientID)
-                        let response = try WreathFrontendResponse.GettransportserverconfigsResponse(result)
+                        let result = self.handler.getTransportServerConfigs(transportName: value.transportName, clientID: value.clientID)
+                        let response = WreathFrontendResponse.GettransportserverconfigsResponse(result)
                         let encoder = JSONEncoder()
                         let responseData = try encoder.encode(response)
                         guard connection.writeWithLengthPrefix(data: responseData, prefixSizeInBits: 64) else
@@ -81,8 +81,8 @@ public class WreathFrontendServer
                             throw WreathFrontendServerError.writeFailed
                         }
                     case .GetwreathserversRequest(let value):
-                        let result = try self.handler.getWreathServers(clientID: value.clientID)
-                        let response = try WreathFrontendResponse.GetwreathserversResponse(result)
+                        let result = self.handler.getWreathServers(clientID: value.clientID)
+                        let response = WreathFrontendResponse.GetwreathserversResponse(result)
                         let encoder = JSONEncoder()
                         let responseData = try encoder.encode(response)
                         guard connection.writeWithLengthPrefix(data: responseData, prefixSizeInBits: 64) else

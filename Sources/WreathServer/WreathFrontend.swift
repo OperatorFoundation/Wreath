@@ -25,16 +25,35 @@ public class WreathFrontend
         self.communicator = try BootstrapCommunicator()
     }
     
-    public func getTransportServerConfigs(transportName: String, clientID: String) throws -> [TransportConfig]
+    public func getTransportServerConfigs(transportName: String, clientID: String) -> [TransportConfig]
     {
         let decoder = JSONDecoder()
-        let arcadiaID = try decoder.decode(ArcadiaID.self, from: clientID.data)
+        
+        do
+        {
+            let arcadiaID = try decoder.decode(ArcadiaID.self, from: clientID.data)
 
-        return self.state.getConfigs(transportName: transportName, clientID: arcadiaID)
+            return self.state.getConfigs(transportName: transportName, clientID: arcadiaID)
+        }
+        catch
+        {
+            print("getTransportServerConfigs error: \(error)")
+            return []
+        }
+        
     }
     
-    public func getWreathServers(clientID: String) throws -> [WreathServerInfo]
+    public func getWreathServers(clientID: String) -> [WreathServerInfo]
     {
-        return try communicator.findPeers()
+        do
+        {
+            return try communicator.findPeers()
+        }
+        catch
+        {
+            print("getWreathServers error: \(error)")
+            return []
+        }
+        
     }
 }
