@@ -38,8 +38,17 @@ class BootstrapCommunicator
         {
             while true
             {
-                print("Timer is up...")
-
+                do
+                {
+                    try await Task.sleep(for: .seconds(60)) // 1 minute
+                    print("Timer is up...")
+                }
+                catch
+                {
+                    print(error)
+                    return
+                }
+                
                 do
                 {
                     print("Trying to send heartbeat...")
@@ -48,16 +57,6 @@ class BootstrapCommunicator
                 catch
                 {
                     print("Failed to send heartbeat: ")
-                    print(error)
-                    return
-                }
-                
-                do
-                {
-                    try await Task.sleep(for: .seconds(1)) // 1 minute
-                }
-                catch
-                {
                     print(error)
                     return
                 }

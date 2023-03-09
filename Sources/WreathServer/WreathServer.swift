@@ -38,7 +38,7 @@ public class WreathServer
             throw WreathServerError.failedToLaunchBackend
         }
 
-        let wreathBackendLogic = try WreathBackend(state: state)
+        let wreathBackendLogic = WreathBackend(state: state)
         self.backend = WreathBackendServer(listener: antiphonyBackendListener, handler: wreathBackendLogic)
     }
 
