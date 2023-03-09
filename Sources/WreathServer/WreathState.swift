@@ -45,10 +45,17 @@ public class WreathState
     {
         defer
         {
+            print("-> self.lock.signal()")
             self.lock.signal()
+            print("-> self.lock.signal() finished")
         }
+        print("-> self.lock.wait()")
         self.lock.wait()
+        print("-> self.lock.wait() finished")
 
-        self.remove(config: config)
+        print("-> self.remove()")
+        self.configs.remove(config)
+        print("-> self.remove() finished")
+
     }
 }

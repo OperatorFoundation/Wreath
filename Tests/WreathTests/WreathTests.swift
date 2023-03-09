@@ -89,6 +89,45 @@ final class WreathTests: XCTestCase
         try wreathBackendClient.removeTransportServerConfig(config: transportConfig)
     }
     
+    func startFrontendClient() throws -> (client: WreathFrontendClient, clientConfig: ClientConfig)
+    {
+        let configURL = File.homeDirectory().appendingPathComponent("wreath-client-frontend.json")
+        
+        guard let config = ClientConfig(url: configURL) else
+        {
+            throw AntiphonyError.invalidConfigFile
+        }
+        
+        guard let connection = TransmissionConnection(host: config.host, port: config.port) else
+        {
+            throw AntiphonyError.failedToCreateConnection
+        }
+        
+        let client = WreathFrontendClient(connection: connection)
+        
+        return (client, config)
+    }
+    
+    func testFrontendAndBackendClient() throws
+    {
+        let (wreathBackendClient, _) = try startBackendClient()
+        let configURL = File.homeDirectory().appendingPathComponent("ShadowClientConfig.json")
+        
+        guard let shadowConfig = ShadowConfig.ShadowClientConfig(path: configURL.path) else
+        {
+            throw AntiphonyError.invalidConfigFile
+        }
+        
+        let transportConfig = TransportConfig.shadow(shadowConfig)
+        try wreathBackendClient.addTransportServerConfig(config: transportConfig)
+        
+        // Test frontend
+        let (wreathFrontendClient, frontEndConfig) = try startFrontendClient()
+        let transportConfigs = try wreathFrontendClient.getTransportServerConfigs(transportName: "shadow", clientID: "")
+        
+        print("-> Received Transport Configs: \(transportConfigs)")
+    }
+    
 }
 
 public enum WreathTestsError: Error

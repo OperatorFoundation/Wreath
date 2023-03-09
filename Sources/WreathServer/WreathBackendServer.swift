@@ -70,6 +70,7 @@ public class WreathBackendServer
                 print("-> Wreath Backend received a request: \n\(requestData.string)")
                 let decoder = JSONDecoder()
                 let request = try decoder.decode(WreathBackendRequest.self, from: requestData)
+                print("-> Wreath Backend decoded request: \n\(request)")
                 switch request
                 {
                     case .AddtransportserverconfigRequest(let value):
@@ -83,6 +84,7 @@ public class WreathBackendServer
                             throw WreathBackendServerError.writeFailed
                         }
                     case .RemovetransportserverconfigRequest(let value):
+                        print("-> case .RemovetransportserverconfigRequest")
                         self.handler.removeTransportServerConfig(config: value.config)
                         let response = WreathBackendResponse.RemovetransportserverconfigResponse
                         let encoder = JSONEncoder()

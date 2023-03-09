@@ -29,6 +29,8 @@ public class WreathBackend
 
     public func removeTransportServerConfig(config: TransportConfig)
     {
+        print("-> removeTransportServerConfig()")
         self.state.remove(config: config)
+        print("-> removeTransportServerConfig() FINISHED")
     }
 }

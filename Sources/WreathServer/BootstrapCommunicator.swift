@@ -21,7 +21,6 @@ class BootstrapCommunicator
     let wreathBootstrapClient: WreathBootstrapClient
     let config: ClientConfig
     let serverID:  ArcadiaID
-    var timer: Timer? = nil
 
     init(config: ClientConfig, connection: TransmissionTypes.Connection) throws
     {
@@ -33,26 +32,35 @@ class BootstrapCommunicator
         self.serverID = arcadiaID
         self.wreathBootstrapClient = WreathBootstrapClient(connection: connection)
         self.config = config
-        
+                
         // Schedule a timer to send a heartbeat every 20 seconds
-        self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true)
+        Task
         {
-            timer in
-            
-            print("Timer is up...")
-
-            timer.tolerance = 2.0
-
-            do
+            while true
             {
-                print("Trying to send heartbeat...")
-                try self.sendHeartbeat()
-            }
-            catch
-            {
-                print("Failed to send heartbeat: ")
-                print(error)
-                return
+                print("Timer is up...")
+
+                do
+                {
+                    print("Trying to send heartbeat...")
+                    try self.sendHeartbeat()
+                }
+                catch
+                {
+                    print("Failed to send heartbeat: ")
+                    print(error)
+                    return
+                }
+                
+                do
+                {
+                    try await Task.sleep(for: .seconds(1)) // 1 minute
+                }
+                catch
+                {
+                    print(error)
+                    return
+                }
             }
         }
         
